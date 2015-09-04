@@ -40,6 +40,8 @@ define([
 					var diamonds;
 					var score = 0;
 					var scoreText;
+					var sidebar;
+					var sidebarArray = ["star", "diamond", "star"];
 
 				function create() {
 
@@ -142,9 +144,18 @@ define([
 
 			    game.camera.follow(player);
 
-			    var t = game.add.text(200, 500, "this text is fixed to the camera", { font: "32px Arial", fill: "#ffffff", align: "center" });
-			    t.fixedToCamera = true;
-			    t.cameraOffset.setTo(200, 500);
+          for (var i = 0; i < 3; i++) {
+				    var sidebar = stars.create(10 + (30 * i), 10, sidebarArray[i]);
+				    sidebar.fixedToCamera = true;
+				  }
+
+			 //    for (var i = 0; i < 3; i++) 
+    // {
+    //     var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
+    //     ship.anchor.setTo(0.5, 0.5);
+    //     ship.angle = 90;
+    //     ship.alpha = 0.4;
+    // }
 			    
 			  }
 
@@ -194,6 +205,10 @@ define([
         function collectStar (player, star) {
 			    // Removes the star from the screen
 			    star.kill();
+			    if (sidebarArray[0] === "star") {
+            sidebarArray.splice(0, 1);
+            console.log(sidebarArray);
+			    }
         }
 
 				function collectDiamond (player, diamond) {
