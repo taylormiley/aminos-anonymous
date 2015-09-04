@@ -45,7 +45,7 @@ define([
 
 			    game.add.tileSprite(0, 0, 1920, 1920, 'sky');
 
-			    game.world.setBounds(0, 0, 1920, 1920);
+			    game.world.setBounds(0, 0, 1200, 1200);
 
 			    //  We're going to be using physics, so enable the Arcade Physics system
 			    game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -54,26 +54,26 @@ define([
 			    game.add.sprite(game.world.centerX, game.world.centerY, 'sky');
 
 			    //  The platforms group contains the ground and the 2 ledges we can jump on
-			    platforms = game.add.group();
+			    //platforms = game.add.group();
 
 			    //  We will enable physics for any object that is created in this group
-			    platforms.enableBody = true;
+			    //platforms.enableBody = true;
 
 			    // Here we create the ground.
-			    var ground = platforms.create(0, game.world.centerY - 64, 'ground');
+			    //var ground = platforms.create(0, game.world.centerY - 64, 'ground');
 
 			    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-			    ground.scale.setTo(2, 2);
+			    //ground.scale.setTo(2, 2);
 
 			    //  This stops it from falling away when you jump on it
-			    ground.body.immovable = true;
+			    //ground.body.immovable = true;
 
 			    //  Now let's create two ledges
-			    var ledge = platforms.create(400, 400, 'ground');
-			    ledge.body.immovable = true;
+			    //var ledge = platforms.create(400, 400, 'ground');
+			    //ledge.body.immovable = true;
 
-			    ledge = platforms.create(-150, 250, 'ground');
-			    ledge.body.immovable = true;
+			    // ledge = platforms.create(-150, 250, 'ground');
+			    // ledge.body.immovable = true;
 
 			    // The player and its settings
 			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
@@ -99,7 +99,7 @@ define([
 			    diamonds.enableBody = true;
 
 			    //  Here we'll create 12 of them evenly spaced apart
-			    for (var i = 0; i < 200; i++) {
+			    for (var i = 0; i < 10; i++) {
 
 		        //  Create a star inside of the 'stars' group
 		        var star = stars.create(i * 70, 0, 'star');
@@ -120,7 +120,7 @@ define([
 
 			    }
 
-			    for (var i = 0; i < 50; i++) {
+			    for (var i = 0; i < 10; i++) {
 			      var diamond = diamonds.create(i * 80, 0, 'diamond');
 
 			      diamond.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-200, 200), 'spinner');
@@ -150,9 +150,9 @@ define([
 
 				function update() {
 			    //  Collide the player and the stars with the platforms
-			    game.physics.arcade.collide(player, platforms);
-			    game.physics.arcade.collide(stars, platforms);
-			    game.physics.arcade.collide(diamonds, platforms);
+			    //game.physics.arcade.collide(player, platforms);
+			    //game.physics.arcade.collide(stars, platforms);
+			    //game.physics.arcade.collide(diamonds, platforms);
 			    game.physics.arcade.collide(stars, stars);
 			    game.physics.arcade.collide(diamonds, diamonds);
 			    game.physics.arcade.collide(stars, diamonds);
@@ -167,11 +167,11 @@ define([
 
 			    
 			    if (cursors.left.isDown) {
-			      player.body.velocity.x = -150;
+			      player.body.velocity.x = -300;
 			      player.animations.play('left');
 			    } 
 			    else if (cursors.right.isDown) {
-			      player.body.velocity.x = 150;
+			      player.body.velocity.x = 300;
 			      player.animations.play('right');
 			    }
 			    else {
