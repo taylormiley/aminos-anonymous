@@ -21,11 +21,12 @@ define([
   .controller("addProteinCtrl", ['$firebaseArray',
     function($firebaseArray) {
       this.aminoAcid = {};
+      this.nameProtein = "";
       var ref = new Firebase("https://aminos-anonymous.firebaseio.com/protein");
       this.protein = $firebaseArray(ref);
       this.addProtein = function() {
         this.protein.$add({
-          insulin: {
+          nameProtein: {
             aa1: this.aminoAcid.aa1 || null,
             aa2: this.aminoAcid.aa3 || null,
             aa3: this.aminoAcid.aa3 || null,
