@@ -6,7 +6,7 @@ define([
   "angularRoute",
   "angularFilter"
 ], function(phaser, angular, bootstrap, angularfire, angularRoute, filter) {
-  return angular.module("SongsApp", [
+  return angular.module("AminoApp", [
     "ngRoute",
     "firebase",
     "angular.filter"
