@@ -9,7 +9,8 @@ define([
 			$routeProvider
 			.when('/', {
 				templateUrl: '../templates/game.html',
-				controller: 'gameCtrl'
+				controller: 'gameCtrl',
+				controllerAs: 'game'
 			});
 		}])
 		.controller("gameCtrl", ["$firebaseArray",
@@ -24,7 +25,7 @@ define([
         function preload() {
 
           game.load.image('sky', 'images/sky.png');
-          game.load.image('ground', 'images/platform.png');
+          //game.load.image('ground', 'images/platform.png');
           game.load.image('star', 'images/star.png');
 			    game.load.spritesheet('dude', 'images/dude.png', 32, 48);
 			    game.load.image('diamond', 'images/diamond.png');
@@ -39,12 +40,14 @@ define([
 					var diamonds;
 					var score = 0;
 					var scoreText;
+					var sidebar;
+					var sidebarArray = ["star", "diamond", "star"];
 
 				function create() {
 
 			    game.add.tileSprite(0, 0, 1920, 1920, 'sky');
 
-			    game.world.setBounds(0, 0, 1920, 1920);
+			    game.world.setBounds(0, 0, 1200, 1200);
 
 			    //  We're going to be using physics, so enable the Arcade Physics system
 			    game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -53,26 +56,26 @@ define([
 			    game.add.sprite(game.world.centerX, game.world.centerY, 'sky');
 
 			    //  The platforms group contains the ground and the 2 ledges we can jump on
-			    platforms = game.add.group();
+			    //platforms = game.add.group();
 
 			    //  We will enable physics for any object that is created in this group
-			    platforms.enableBody = true;
+			    //platforms.enableBody = true;
 
 			    // Here we create the ground.
-			    var ground = platforms.create(0, game.world.centerY - 64, 'ground');
+			    //var ground = platforms.create(0, game.world.centerY - 64, 'ground');
 
 			    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-			    ground.scale.setTo(2, 2);
+			    //ground.scale.setTo(2, 2);
 
 			    //  This stops it from falling away when you jump on it
-			    ground.body.immovable = true;
+			    //ground.body.immovable = true;
 
 			    //  Now let's create two ledges
-			    var ledge = platforms.create(400, 400, 'ground');
-			    ledge.body.immovable = true;
+			    //var ledge = platforms.create(400, 400, 'ground');
+			    //ledge.body.immovable = true;
 
-			    ledge = platforms.create(-150, 250, 'ground');
-			    ledge.body.immovable = true;
+			    // ledge = platforms.create(-150, 250, 'ground');
+			    // ledge.body.immovable = true;
 
 			    // The player and its settings
 			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
@@ -91,28 +94,46 @@ define([
 
 			    diamonds = game.add.group();
 
+
 			    //  We will enable physics for any star that is created in this group
 			    stars.enableBody = true;
 
 			    diamonds.enableBody = true;
 
 			    //  Here we'll create 12 of them evenly spaced apart
-			    for (var i = 0; i < 12; i++) {
+			    for (var i = 0; i < 10; i++) {
+
 		        //  Create a star inside of the 'stars' group
 		        var star = stars.create(i * 70, 0, 'star');
 
+		        star.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-200, 200), 'spinner');
+
+		        star.body.collideWorldBounds = true;
+
+		        //star.body.velocity.x = 0.7 + Math.random() * 100;
+		        //star.body.velocity.y = 0.7 + Math.random() * 100;
+
 		        //  Let gravity do its thing
-		        star.body.gravity.y = 300;
+		        //star.body.gravity.y = 300;
 
 		        //  This just gives each star a slightly random bounce value
-		        star.body.bounce.y = 0.7 + Math.random() * 0.2;
+		        star.body.bounce.y = 0.7 + Math.random() * 0.5;
+		        star.body.bounce.x = 0.7 + Math.random() * 0.5;
 
 			    }
 
-			    for (var i = 0; i < 12; i++) {
+			    for (var i = 0; i < 10; i++) {
 			      var diamond = diamonds.create(i * 80, 0, 'diamond');
-			      diamond.body.gravity.y = 300;
-			      diamond.body.bounce.y = 0.7 + Math.random() * 0.2;
+
+			      diamond.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-200, 200), 'spinner');
+
+			      diamond.body.collideWorldBounds = true;
+
+			      //diamond.body.velocity.x = 0.7 + Math.random() * 0.5;
+			      //diamond.body.velocity.y = 0.7 + Math.random() * 0.5;
+			      //diamond.body.gravity.y = 300;
+			      diamond.body.bounce.y = 0.7 + Math.random() * 0.5;
+			      diamond.body.bounce.x = 0.7 + Math.random() * 0.5;
 			    }
 
 			    //  The score
@@ -123,17 +144,29 @@ define([
 
 			    game.camera.follow(player);
 
-			    var t = game.add.text(200, 500, "this text is fixed to the camera", { font: "32px Arial", fill: "#ffffff", align: "center" });
-			    t.fixedToCamera = true;
-			    t.cameraOffset.setTo(200, 500);
+          for (var i = 0; i < 3; i++) {
+				    var sidebar = stars.create(10 + (30 * i), 10, sidebarArray[i]);
+				    sidebar.fixedToCamera = true;
+				  }
+
+			 //    for (var i = 0; i < 3; i++) 
+    // {
+    //     var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
+    //     ship.anchor.setTo(0.5, 0.5);
+    //     ship.angle = 90;
+    //     ship.alpha = 0.4;
+    // }
 			    
 			  }
 
 				function update() {
 			    //  Collide the player and the stars with the platforms
-			    game.physics.arcade.collide(player, platforms);
-			    game.physics.arcade.collide(stars, platforms);
-			    game.physics.arcade.collide(diamonds, platforms);
+			    //game.physics.arcade.collide(player, platforms);
+			    //game.physics.arcade.collide(stars, platforms);
+			    //game.physics.arcade.collide(diamonds, platforms);
+			    game.physics.arcade.collide(stars, stars);
+			    game.physics.arcade.collide(diamonds, diamonds);
+			    game.physics.arcade.collide(stars, diamonds);
 
 			    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
 			    game.physics.arcade.overlap(player, stars, collectStar, null, this);
@@ -145,11 +178,11 @@ define([
 
 			    
 			    if (cursors.left.isDown) {
-			      player.body.velocity.x = -150;
+			      player.body.velocity.x = -300;
 			      player.animations.play('left');
 			    } 
 			    else if (cursors.right.isDown) {
-			      player.body.velocity.x = 150;
+			      player.body.velocity.x = 300;
 			      player.animations.play('right');
 			    }
 			    else {
@@ -172,6 +205,10 @@ define([
         function collectStar (player, star) {
 			    // Removes the star from the screen
 			    star.kill();
+			    if (sidebarArray[0] === "star") {
+            sidebarArray.splice(0, 1);
+            console.log(sidebarArray);
+			    }
         }
 
 				function collectDiamond (player, diamond) {
