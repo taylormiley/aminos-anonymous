@@ -26,9 +26,10 @@ define([
 
           game.load.image('sky', 'images/sky.png');
           //game.load.image('ground', 'images/platform.png');
-          game.load.image('star', 'images/star.png');
-			    game.load.spritesheet('dude', 'images/dude.png', 32, 48);
-			    game.load.image('diamond', 'images/diamond.png');
+          game.load.image('star', 'images/Proline.png');
+			    // game.load.spritesheet('dude', 'images/dude.png', 32, 48);
+			    game.load.image('dude', 'images/Ribosome.png');
+			    game.load.image('diamond', 'images/Lysine.png');
 
         }
 
@@ -79,6 +80,7 @@ define([
 
 			    // The player and its settings
 			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
+			    player.anchor.setTo(.5, 1); //so it flips around its middle
 
 			    //  We need to enable physics on the player
 			    game.physics.arcade.enable(player);
@@ -86,8 +88,8 @@ define([
 			    //  Player physics properties. Give the little guy a slight bounce. 
 			    player.body.collideWorldBounds = true;
 			    //  Our two animations, walking left and right.
-			    player.animations.add('left', [0, 1, 2, 3], 10, true);
-			    player.animations.add('right', [5, 6, 7, 8], 10, true);
+			    // player.animations.add('left', [0, 1, 2, 3], 10, true);
+			    // player.animations.add('right', [5, 6, 7, 8], 10, true);
 
 			    //  Finally some stars to collect
 			    stars = game.add.group();
@@ -179,25 +181,27 @@ define([
 			    
 			    if (cursors.left.isDown) {
 			      player.body.velocity.x = -300;
-			      player.animations.play('left');
+			      player.scale.x = 1;
+			      // player.animations.play('left');
 			    } 
 			    else if (cursors.right.isDown) {
 			      player.body.velocity.x = 300;
-			      player.animations.play('right');
+			      player.scale.x = -1;
+			      // player.animations.play('right');
 			    }
 			    else {
 			      //  Stand still
-			      player.animations.stop();
+			      // player.animations.stop();
 
-			      player.frame = 4;
+			      // player.frame = 4;
 			    } 
 
 			    if (cursors.up.isDown) {
-			      player.body.velocity.y = -150;
+			      player.body.velocity.y = -300;
 			    }
 			    else if (cursors.down.isDown)
 			    {
-			      player.body.velocity.y = 150;
+			      player.body.velocity.y = 300;
 			    }
 				    
 				}
