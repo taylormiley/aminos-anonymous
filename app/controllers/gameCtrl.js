@@ -24,25 +24,26 @@ define([
 
 			game.load.image("background", "images/Cell_bg.png");
 			game.load.image("player", "images/Ribosome.png");
-			game.load.image("alanine", "images/Alanine.png");
-			game.load.image("arginine", "images/Arginine.png");
-			game.load.image("aspartic_acid", "images/Aspartic_acid.png");
-			game.load.image("cysteine", "images/Cysteine.png");
-			game.load.image("glutamic_acid", "images/Glutamic_acid.png");
-			game.load.image("glutamine", "images/Glutamine.png");
-			game.load.image("glycine", "images/Glycine.png");
-			game.load.image("histidine", "images/Histidine.png");
-			game.load.image("isoleucine", "images/Isoleucine.png");
-			game.load.image("leucine", "images/Leucine.png");
-			game.load.image("lysine", "images/Lysine.png");
-			game.load.image("methionine", "images/Methionine.png");
-			game.load.image("phenylalanine", "images/Phenylalanine.png");
-			game.load.image("proline", "images/Proline.png");
-			game.load.image("serine", "images/Serine.png");
-			game.load.image("threonine", "images/Threonine.png");
-			game.load.image("tryptophan", "images/Tryptophan.png");
-			game.load.image("tyrosine", "images/Tyrosine.png");
-			game.load.image("valine", "images/Valine.png");
+			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
+			game.load.spritesheet("arginine", "images/Arginine.png", 60, 52);
+			game.load.spritesheet("asparagine", "images/Asparagine.png", 26, 60);
+			game.load.spritesheet("aspartic_acid", "images/Aspartic_acid.png", 60, 58);
+			game.load.spritesheet("cysteine", "images/Cysteine.png", 60, 59);
+			game.load.spritesheet("glutamic_acid", "images/Glutamic_acid.png", 30, 60);
+			game.load.spritesheet("glutamine", "images/Glutamine.png", 60, 44);
+			game.load.spritesheet("glycine", "images/Glycine.png", 60, 57);
+			game.load.spritesheet("histidine", "images/Histidine.png", 59, 60);
+			game.load.spritesheet("isoleucine", "images/Isoleucine.png", 60, 59);
+			game.load.spritesheet("leucine", "images/Leucine.png", 59, 60);
+			game.load.spritesheet("lysine", "images/Lysine.png", 60, 44);
+			game.load.spritesheet("methionine", "images/Methionine.png", 43, 60);
+			game.load.spritesheet("phenylalanine", "images/Phenylalanine.png", 60, 60);
+			game.load.spritesheet("proline", "images/Proline.png", 60, 48);
+			game.load.spritesheet("serine", "images/Serine.png", 39, 60);
+			game.load.spritesheet("threonine", "images/Threonine.png", 56, 60);
+			game.load.spritesheet("tryptophan", "images/Tryptophan.png", 60, 31);
+			game.load.spritesheet("tyrosine", "images/Tyrosine.png", 60, 38);
+			game.load.spritesheet("valine", "images/Valine.png", 60, 60);
 
 		}
 
@@ -113,33 +114,34 @@ define([
 
 			//  Here we"ll create 12 of them evenly spaced apart
 			for (var i = 0; i < 15; i++) {
-				var randAmino = game.rnd.integerInRange(0, aminoArray.length);
-				var theAmino = aminoArray[randAmino];
+				var theAmino = game.rnd.pick(aminoArray);
 
 				//  Create a goody inside of the "goodies" group
 				var goody = goodies.create(i * 70, 0, theAmino);
-				goody.anchor.setTo(0.5, 1); //so it flips around its middle
+				goody.anchor.setTo(0.5, 0.5); //so it flips around its middle
+				goody.rotation = game.rnd.realInRange(-0.2, 0.2);
 
 				goody.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
 
 				goody.body.collideWorldBounds = true;
 
-				goody.body.bounce.y = 0.5 + Math.random() * 0.6;
-				goody.body.bounce.x = 0.6 + Math.random() * 0.6;
+				goody.body.bounce.y = 0.6 + Math.random() * 0.35;
+				goody.body.bounce.x = 0.6 + Math.random() * 0.35;
 
 			}
 
 			for (var j = 0; j < 5; j++) {
 
 				var baddy = baddies.create(j * 80, 0, "lysine");
-				baddy.anchor.setTo(0.5, 1); //so it flips around its middle
+				baddy.anchor.setTo(0.5, 0.5); //so it flips around its middle
+				baddy.rotation = game.rnd.realInRange(-0.2, 0.2);
 
 				baddy.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
 
 				baddy.body.collideWorldBounds = true;
 
-				baddy.body.bounce.y = 0.6 + Math.random() * 0.6;
-				baddy.body.bounce.x = 0.6 + Math.random() * 0.6;
+				baddy.body.bounce.y = 0.6 + Math.random() * 0.35;
+				baddy.body.bounce.x = 0.6 + Math.random() * 0.35;
 			}
 
 			//  The score
@@ -158,9 +160,9 @@ define([
 		}
 
 		function update() {
-			game.physics.arcade.collide(goodies, goodies);
-			game.physics.arcade.collide(baddies, baddies);
-			game.physics.arcade.collide(goodies, baddies);
+			game.physics.arcade.collide(goodies, goodies, rotateBoth, null, this);
+			game.physics.arcade.collide(baddies, baddies, rotateBoth, null, this);
+			game.physics.arcade.collide(goodies, baddies, rotateBoth, null, this);
 
 			//  Checks to see if the player overlaps with any of the goodies, if he does call the collectGoodie function
 			game.physics.arcade.overlap(player, goodies, collectGoodie, null, this);
@@ -185,19 +187,25 @@ define([
 				player.body.velocity.y = 300;
 			}
 
-			for (var m = 0; m < goodies.children.length; m++) {
-				if(goodies.children[m].body.velocity.x > 0) {
-					goodies.children[m].scale.x = 1;
-				} else if(goodies.children[m].body.velocity.x < 0) { 
-					goodies.children[m].scale.x = -1;
+			for (var l = 0; l < baddies.children.length; l++) {
+				if(Math.abs(baddies.children[l].body.velocity.x) < 40 || Math.abs(baddies.children[l].body.velocity.y) < 40) {
+					baddies.children[l].body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
+				}
+				if(baddies.children[l].body.velocity.x > 0) {
+					baddies.children[l].frame = 1;
+				} else if(baddies.children[l].body.velocity.x < 0) { 
+					baddies.children[l].frame = 0;
 				}
 			}
 
-			for (var l = 0; l < baddies.children.length; l++) {
-				if(baddies.children[l].body.velocity.x > 0) {
-					baddies.children[l].scale.x = 1;
-				} else if(baddies.children[l].body.velocity.x < 0) { 
-					baddies.children[l].scale.x = -1;
+			for (var m = 0; m < goodies.children.length; m++) {
+				if(Math.abs(goodies.children[m].body.velocity.x) < 40 || Math.abs(goodies.children[m].body.velocity.x) < 40) {
+					goodies.children[m].body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
+				}
+				if(goodies.children[m].body.velocity.x > 0) {
+					goodies.children[m].frame = 1;
+				} else if(goodies.children[m].body.velocity.x < 0) { 
+					goodies.children[m].frame = 0;
 				}
 			}
 
@@ -208,7 +216,6 @@ define([
 			item.kill();
 			if (sidebarArray[0] === "proline") {
 				sidebarArray.splice(0, 1);
-				console.log(sidebarArray);
 			}
 		}
 
@@ -220,6 +227,11 @@ define([
 		function render() {
 			game.debug.cameraInfo(game.camera, 32, 32);
 			game.debug.spriteCoords(player, 32, 500);
+		}
+
+		function rotateBoth(item1, item2) {
+			item1.rotation = game.rnd.realInRange(-0.2, 0.2);
+			item2.rotation = game.rnd.realInRange(-0.2, 0.2);
 		}
 
 	}]);
