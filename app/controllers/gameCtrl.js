@@ -7,7 +7,7 @@ define([
 	angular.module("AminoApp.game", ["ngRoute"])
 	.config(["$routeProvider", function($routeProvider) {
 		$routeProvider.when("/", {
-			templateUrl: "../templates/game.html",
+			templateUrl: "../partials/game.html",
 			controller: "gameCtrl",
 			controllerAs: "game"
 		});
@@ -18,7 +18,7 @@ define([
 
 		var gameArray = $firebaseArray(ref);
 
-		var game = new Phaser.Game(800, 600, Phaser.AUTO, "", { preload: preload, create: create, update: update });
+		var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameTarget", { preload: preload, create: create, update: update });
 
 		function preload() {
 

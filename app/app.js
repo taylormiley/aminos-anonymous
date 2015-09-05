@@ -5,14 +5,16 @@ define([
   "angularfire",
   "angularRoute",
   "angularFilter",
+  "controllers/add",
   "controllers/gameCtrl",
   "controllers/populate-firebase"
-], function(phaser, angular, bootstrap, angularfire, angularRoute, filter, gameCtrl, addProtein) {
+], function(phaser, angular, bootstrap, angularfire, angularRoute, filter, add, gameCtrl, addProtein) {
   return angular.module("AminoApp", [
     "ngRoute",
     "firebase",
-    "angular.filter",
+    "AminoApp.add",
     "AminoApp.game",
+    "angular.filter",
     "AminoApp.addProtein"
   ]).
   config(["$routeProvider", function($routeProvider) {
