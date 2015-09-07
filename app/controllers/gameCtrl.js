@@ -6,7 +6,7 @@ define([
 ], function(angular, angularRoute, firebase, bootstrap) {
 	angular.module("AminoApp.game", ["ngRoute"])
 	.config(["$routeProvider", function($routeProvider) {
-		$routeProvider.when("/", {
+		$routeProvider.when("/game", {
 			templateUrl: "../partials/game.html",
 			controller: "gameCtrl",
 			controllerAs: "game"
