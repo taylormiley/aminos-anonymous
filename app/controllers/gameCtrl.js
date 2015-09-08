@@ -22,6 +22,8 @@ define([
 
 		function preload() {
 
+			game.load.audio('titletrk', ['assets/titleTrack.wav']);
+			game.load.audio('hitReact', ['assets/hitReaction.wav']);
 			game.load.image("background", "images/Cell_bg.png");
 			game.load.image("player", "images/Ribosome.png");
 			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
@@ -49,6 +51,8 @@ define([
 
 		var player;
 		var cursors;
+		var music;
+		var hitReact;
 		var frenemies;
 		var baddies;
 		var score = 0;
@@ -79,6 +83,12 @@ define([
 
 		function create() {
 
+	    music = game.add.audio('titletrk');
+	    music.loop = true;
+	    music.play();
+	    
+			hitReact = game.add.audio('hitReact');
+
 			game.add.tileSprite(0, 0, 1200, 1200, "background");
 
 			game.world.setBounds(0, 0, 1200, 1200);
@@ -93,6 +103,8 @@ define([
 
 			//  We need to enable physics on the player
 			game.physics.arcade.enable(player);
+
+			
 
 			//  Player physics properties. Give the little guy a slight bounce. 
 			player.body.collideWorldBounds = true;
@@ -167,6 +179,7 @@ define([
           goodFrenemy(player, frenemy);
 		    } else {
 		    	badFrenemy(player, frenemy);
+		    	hitReact.play();
 		    }
       }
 
@@ -181,6 +194,7 @@ define([
 
       function badFrenemy (player, frenemy) {
         player.kill();
+        
       }
 
 			function rotateBoth(item1, item2) {
