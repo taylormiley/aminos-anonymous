@@ -37,12 +37,12 @@ define([
 					var platforms;
 					var cursors;
 					var lives;
-					var stars;
-					var diamonds;
+					var frenemies;
 					var score = 0;
 					var scoreText;
 					var sidebar;
-					var sidebarArray = ["star", "diamond", "star"];
+					var sidebarArray = new Array("star", "diamond", "star")
+					var sidebarIcons;
 
 				function create() {
 
@@ -91,22 +91,27 @@ define([
 			    // player.animations.add('left', [0, 1, 2, 3], 10, true);
 			    // player.animations.add('right', [5, 6, 7, 8], 10, true);
 
-			    //  Finally some stars to collect
-			    stars = game.add.group();
+			    //  Finally some frenemies to collect
+			    frenemies = game.add.group();
 
 			    diamonds = game.add.group();
 
+			    sidebarIcons = game.add.group();
+
+
+
 
 			    //  We will enable physics for any star that is created in this group
-			    stars.enableBody = true;
+			    frenemies.enableBody = true;
 
 			    diamonds.enableBody = true;
 
 			    //  Here we'll create 12 of them evenly spaced apart
 			    for (var i = 0; i < 10; i++) {
 
-		        //  Create a star inside of the 'stars' group
-		        var star = stars.create(i * 70, 0, 'star');
+		        //  Create a star inside of the 'frenemies' group
+		        var star = frenemies.create(i * 70, 0, 'star');
+		        star.friendly = true;
 
 		        star.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-200, 200), 'spinner');
 
@@ -121,11 +126,12 @@ define([
 		        //  This just gives each star a slightly random bounce value
 		        star.body.bounce.y = 0.7 + Math.random() * 0.5;
 		        star.body.bounce.x = 0.7 + Math.random() * 0.5;
+		        console.log(star);
 
 			    }
 
 			    for (var i = 0; i < 10; i++) {
-			      var diamond = diamonds.create(i * 80, 0, 'diamond');
+			      var diamond = frenemies.create(i * 80, 0, 'diamond');
 
 			      diamond.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-200, 200), 'spinner');
 
@@ -147,9 +153,10 @@ define([
 			    game.camera.follow(player);
 
           for (var i = 0; i < 3; i++) {
-				    var sidebar = stars.create(10 + (30 * i), 10, sidebarArray[i]);
-				    sidebar.fixedToCamera = true;
+				    var sidebarIcon = sidebarIcons.create(10 + (30 * i), 10, sidebarArray[i]);
+				    sidebarIcons.fixedToCamera = true;
 				  }
+				  console.log(sidebarIcons);
 
 			 //    for (var i = 0; i < 3; i++) 
     // {
@@ -162,18 +169,14 @@ define([
 			  }
 
 				function update() {
-			    //  Collide the player and the stars with the platforms
+			    //  Collide the player and the frenemies with the platforms
 			    //game.physics.arcade.collide(player, platforms);
-			    //game.physics.arcade.collide(stars, platforms);
+			    //game.physics.arcade.collide(frenemies, platforms);
 			    //game.physics.arcade.collide(diamonds, platforms);
-			    game.physics.arcade.collide(stars, stars);
-			    game.physics.arcade.collide(diamonds, diamonds);
-			    game.physics.arcade.collide(stars, diamonds);
+			    game.physics.arcade.collide(frenemies, frenemies);
 
-			    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-			    game.physics.arcade.overlap(player, stars, collectStar, null, this);
-			    game.physics.arcade.overlap(player, diamonds, collectDiamond, null, this);
-
+			    //  Checks to see if the player overlaps with any of the frenemies, if he does call the collectStar function
+			    game.physics.arcade.overlap(player, frenemies, checkFrenemy, null, this);
 			    //  Reset the players velocity (movement)
 			    player.body.velocity.x = 0;
 			    player.body.velocity.y = 0;
@@ -206,19 +209,26 @@ define([
 				    
 				}
 
-        function collectStar (player, star) {
+        function checkFrenemy (player, frenemy) {
 			    // Removes the star from the screen
-			    star.kill();
-			    if (sidebarArray[0] === "star") {
-            sidebarArray.splice(0, 1);
-            console.log(sidebarArray);
+			    if (sidebarArray[0] === frenemy.key) {
+            goodFrenemy(player, frenemy);
+			    } else {
+			    	badFrenemy(player, frenemy);
 			    }
         }
 
-				function collectDiamond (player, diamond) {
-				  diamond.kill();
-				  player.kill();
-				}
+        function goodFrenemy (player, frenemy) {
+          sidebarArray.splice(0, 1);
+          console.log(sidebarArray);
+          frenemy.kill();
+		      sidebarIcons.remove(sidebarIcons.children[0], true, true);
+        }
+
+        function badFrenemy (player, frenemy) {
+          player.kill();
+        }
+
 
         function render() {
 			    game.debug.cameraInfo(game.camera, 32, 32);
