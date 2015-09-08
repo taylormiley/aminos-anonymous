@@ -41,7 +41,7 @@ define([
           uid: currentUID,
           username: this.username
         });
-        window.location = "#/welcome/";
+        window.location = "#/game/";
       };
 
     }

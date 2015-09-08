@@ -12,18 +12,18 @@ define([
 			controllerAs: "game"
 		});
 	}])
-	.controller("gameCtrl", ["$firebaseArray", function($firebaseArray) {
+	.controller("gameCtrl", ["$firebaseArray", "uid", function($firebaseArray, uid) {
 
-		// var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
+		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
 
-		// var gameArray = $firebaseArray(ref);
+		var gameArray = $firebaseArray(ref);
 
 		var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameTarget", { preload: preload, create: create, update: update });
 
 		function preload() {
 
-			game.load.audio('titletrk', ['assets/titleTrack.wav']);
-			game.load.audio('hitReact', ['assets/hitReaction.wav']);
+			game.load.audio('titletrk', ['audio/titleTrack.wav']);
+			game.load.audio('hitReact', ['audio/hitReaction.wav']);
 			game.load.image("background", "images/Cell_bg.png");
 			game.load.image("player", "images/Ribosome.png");
 			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);

@@ -7,11 +7,10 @@ define([
   "angularFilter",
   "factories/uid",
   "controllers/auth",
-  "controllers/welcome",
   "controllers/username",
   "controllers/gameCtrl",
   "controllers/populate-firebase"
-], function(phaser, angular, bootstrap, angularfire, angularRoute, filter, uid, auth, welcome, username, gameCtrl, addProtein) {
+], function(phaser, angular, bootstrap, angularfire, angularRoute, filter, uid, auth, username, gameCtrl, addProtein) {
   return angular.module("AminoApp", [
     "ngRoute",
     "firebase",
@@ -19,7 +18,6 @@ define([
     "AminoApp.auth",
     "AminoApp.game",
     "angular.filter",
-    "AminoApp.welcome",
     "AminoApp.username",
     "AminoApp.addProtein"
   ]).
