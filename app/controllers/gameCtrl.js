@@ -22,6 +22,8 @@ define([
 
 		function preload() {
 
+			game.load.audio('titletrk', ['assets/titleTrack.wav']);
+			game.load.audio('hitReact', ['assets/hitReaction.wav']);
 			game.load.image("background", "images/Cell_bg.png");
 			game.load.image("player", "images/Ribosome.png");
 			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
@@ -49,12 +51,14 @@ define([
 
 		var player;
 		var cursors;
+		var music;
+		var hitReact;
 		var frenemies;
 		var baddies;
 		var score = 0;
 		var sidebar;
 		var sidebarIcons;
-		var sidebarArray = ["proline", "lysine", "proline"];
+		var sidebarArray = ["proline", "lysine", "proline", "lysine", "proline", "lysine"];
 		var aminoArray = [
 			"alanine",
 			"arginine",
@@ -79,6 +83,12 @@ define([
 
 		function create() {
 
+	    music = game.add.audio('titletrk');
+	    music.loop = true;
+	    music.play();
+	    
+			hitReact = game.add.audio('hitReact');
+
 			game.add.tileSprite(0, 0, 1200, 1200, "background");
 
 			game.world.setBounds(0, 0, 1200, 1200);
@@ -93,6 +103,8 @@ define([
 
 			//  We need to enable physics on the player
 			game.physics.arcade.enable(player);
+
+			
 
 			//  Player physics properties. Give the little guy a slight bounce. 
 			player.body.collideWorldBounds = true;
@@ -121,7 +133,7 @@ define([
 				frenemy.anchor.setTo(0.5, 0.5); //so it flips around its middle
 				frenemy.rotation = game.rnd.realInRange(-0.2, 0.2);
 
-				frenemy.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
+				frenemy.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-300, 300), "spinner");
 
 				frenemy.body.collideWorldBounds = true;
 
@@ -138,7 +150,18 @@ define([
 			for (var k = 0; k < sidebarArray.length; k++) {
 				var sidebar = sidebarIcons.create(10 + (65 * k), 10, sidebarArray[k]);
 				sidebar.fixedToCamera = true;
+				console.log(sidebarIcons);
+				if (k > 1) {
+            sidebarIcons.children[k].alpha = 0;
+				}
+				if (k === 1) {
+					sidebarIcons.children[k].scale.x = .7;
+					sidebarIcons.children[k].scale.y = .7;
+				}
+				console.log(sidebarIcons.children[k]);
+				console.log(sidebarIcons.children[k].alpha)
 			}
+			console.log(sidebarIcons);
 
 		}
 
@@ -168,25 +191,40 @@ define([
 			}
 
       function checkFrenemy (player, frenemy) {
-		    if (sidebarArray[sidebarArray.length-1] === frenemy.key) { // right-to-left sidebar
-		    // if (sidebarArray[0] === frenemy.key) { // left-to-right sidebar
+		    // if (sidebarArray[sidebarArray.length] === frenemy.key) { // right-to-left sidebar
+		    if (sidebarArray[0] === frenemy.key) { // left-to-right sidebar
           goodFrenemy(player, frenemy);
 		    } else {
 		    	badFrenemy(player, frenemy);
+		    	hitReact.play();
 		    }
       }
 
       function goodFrenemy (player, frenemy) {
-        sidebarArray.splice(sidebarArray.length-1, 1); // right-to-left sidebar
-        // sidebarArray.splice(0, 1); // left-to-right sidebar
+        // sidebarArray.splice(sidebarArray.length-1, 1); // right-to-left sidebar
+        sidebarArray.splice(0, 1); // left-to-right sidebar
         console.log(sidebarArray);
         frenemy.kill();
-	      sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true); // right-to-left sidebar
-	      // sidebarIcons.remove(sidebarIcons.children[0], true, true); // left-to-right sidebar
+	      // sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true); // right-to-left sidebar
+	      sidebarIcons.removeAll(); // left-to-right sidebar
+	      for (var m = 0; m < sidebarArray.length; m++) {
+				  var sidebar = sidebarIcons.create(10 + (65 * m), 10, sidebarArray[m]);
+				  sidebar.fixedToCamera = true;
+				  if (m > 1) {
+            sidebarIcons.children[m].alpha = 0;
+				  }
+				  if (m === 1) {
+					sidebarIcons.children[m].scale.x = .7;
+					sidebarIcons.children[m].scale.y = .7;
+				}
+				  console.log(sidebarIcons);
+			  }
+			  
       }
 
       function badFrenemy (player, frenemy) {
         player.kill();
+        
       }
 
 			function rotateBoth(item1, item2) {
@@ -196,7 +234,7 @@ define([
 
 			for (var l = 0; l < frenemies.children.length; l++) {
 				if(Math.abs(frenemies.children[l].body.velocity.x) < 40 || Math.abs(frenemies.children[l].body.velocity.y) < 40) {
-					frenemies.children[l].body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
+					frenemies.children[l].body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-300, 300), "spinner");
 				}
 				if(frenemies.children[l].body.velocity.x > 0) {
 					frenemies.children[l].frame = 1;
