@@ -153,7 +153,7 @@ define([
 			    game.camera.follow(player);
 
           for (var i = 0; i < 3; i++) {
-				    var sidebarIcon = sidebarIcons.create(10 + (30 * i), 10, sidebarArray[i]);
+				    var sidebarIcon = sidebarIcons.create(10 + (70 * i), 10, sidebarArray[i]);
 				    sidebarIcons.fixedToCamera = true;
 				  }
 				  console.log(sidebarIcons);
