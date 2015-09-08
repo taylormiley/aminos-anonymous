@@ -3,18 +3,20 @@ define([
 	"angularRoute",
 	"firebase",
 	"bootstrap"
+	
 ], function(angular, angularRoute, firebase, bootstrap) {
 	angular.module("AminoApp.game", ["ngRoute"])
-	.config(["$routeProvider", function($routeProvider) {
+	.config(["$routeProvider", "$firebaseArray",  
+	function($routeProvider, $firebaseArray) {
 		$routeProvider.when("/game", {
 			templateUrl: "../partials/game.html",
 			controller: "gameCtrl",
 			controllerAs: "game"
 		});
 	}])
-	.controller("gameCtrl", ["$firebaseArray", function($firebaseArray) {
+	.controller("gameCtrl", ["$firebaseArray", '$firebaseObject', function($firebaseArray, $firebaseObject) {
 
-		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
+		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/protein");
 
 		var gameArray = $firebaseArray(ref);
 
@@ -24,26 +26,26 @@ define([
 
 			game.load.image("background", "images/Cell_bg.png");
 			game.load.image("player", "images/Ribosome.png");
-			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
-			game.load.spritesheet("arginine", "images/Arginine.png", 60, 52);
-			game.load.spritesheet("asparagine", "images/Asparagine.png", 26, 60);
-			game.load.spritesheet("aspartic_acid", "images/Aspartic_acid.png", 60, 58);
-			game.load.spritesheet("cysteine", "images/Cysteine.png", 60, 59);
-			game.load.spritesheet("glutamic_acid", "images/Glutamic_acid.png", 30, 60);
-			game.load.spritesheet("glutamine", "images/Glutamine.png", 60, 44);
-			game.load.spritesheet("glycine", "images/Glycine.png", 60, 57);
-			game.load.spritesheet("histidine", "images/Histidine.png", 59, 60);
-			game.load.spritesheet("isoleucine", "images/Isoleucine.png", 60, 59);
-			game.load.spritesheet("leucine", "images/Leucine.png", 59, 60);
-			game.load.spritesheet("lysine", "images/Lysine.png", 60, 44);
-			game.load.spritesheet("methionine", "images/Methionine.png", 43, 60);
-			game.load.spritesheet("phenylalanine", "images/Phenylalanine.png", 60, 60);
-			game.load.spritesheet("proline", "images/Proline.png", 60, 48);
-			game.load.spritesheet("serine", "images/Serine.png", 39, 60);
-			game.load.spritesheet("threonine", "images/Threonine.png", 56, 60);
-			game.load.spritesheet("tryptophan", "images/Tryptophan.png", 60, 31);
-			game.load.spritesheet("tyrosine", "images/Tyrosine.png", 60, 38);
-			game.load.spritesheet("valine", "images/Valine.png", 60, 60);
+			game.load.spritesheet("ALA", "images/Alanine.png", 60, 59);
+			game.load.spritesheet("ARG", "images/Arginine.png", 60, 52);
+			game.load.spritesheet("ASN", "images/Asparagine.png", 26, 60);
+			game.load.spritesheet("ASP", "images/Aspartic_acid.png", 60, 58);
+			game.load.spritesheet("CYS", "images/Cysteine.png", 60, 59);
+			game.load.spritesheet("GLU", "images/Glutamic_acid.png", 30, 60);
+			game.load.spritesheet("GLN", "images/Glutamine.png", 60, 44);
+			game.load.spritesheet("GLY", "images/Glycine.png", 60, 57);
+			game.load.spritesheet("HIS", "images/Histidine.png", 59, 60);
+			game.load.spritesheet("ILE", "images/Isoleucine.png", 60, 59);
+			game.load.spritesheet("LEU", "images/Leucine.png", 59, 60);
+			game.load.spritesheet("LYS", "images/Lysine.png", 60, 44);
+			game.load.spritesheet("MET", "images/Methionine.png", 43, 60);
+			game.load.spritesheet("PHE", "images/Phenylalanine.png", 60, 60);
+			game.load.spritesheet("PRO", "images/Proline.png", 60, 48);
+			game.load.spritesheet("SER", "images/Serine.png", 39, 60);
+			game.load.spritesheet("THR", "images/Threonine.png", 56, 60);
+			game.load.spritesheet("TRP", "images/Tryptophan.png", 60, 31);
+			game.load.spritesheet("TYR", "images/Tyrosine.png", 60, 38);
+			game.load.spritesheet("VAL", "images/Valine.png", 60, 60);
 
 		}
 
@@ -54,28 +56,42 @@ define([
 		var score = 0;
 		var sidebar;
 		var sidebarIcons;
-		var sidebarArray = ["proline", "lysine", "proline"];
+		var sidebarArray = ["PRO", "LYS", "MET"];
 		var aminoArray = [
-			"alanine",
-			"arginine",
-			"aspartic_acid",
-			"cysteine",
-			"glutamic_acid",
-			"glutamine",
-			"glycine",
-			"histidine",
-			"isoleucine",
-			"leucine",
-			"lysine",
-			"methionine",
-			"phenylalanine",
-			"proline",
-			"serine",
-			"threonine",
-			"tryptophan",
-			"tyrosine",
-			"valine"
+			"ALA",
+			"ARG",
+			"ASP",
+			"CYS",
+			"GLU",
+			"GLN",
+			"GLY",
+			"HIS",
+			"ILE",
+			"LEU",
+			"LYS",
+			"MET",
+			"PHE",
+			"PRO",
+			"SER",
+			"THR",
+			"TRP",
+			"TYR",
+			"VAL"
 		];
+
+		this.gameProtein = function() {
+        this.sequence = [];
+        console.log("click");
+
+        ref.once("value", function(snapshot) {
+          var gameProtein = snapshot.val();
+          for (var key in gameProtein) {
+            var theOnlyProtein = gameProtein[key];
+          }
+          console.log("the Only Protein", theOnlyProtein.sequence);
+
+        });
+      };
 
 		function create() {
 
