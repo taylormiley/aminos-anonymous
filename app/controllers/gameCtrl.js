@@ -14,9 +14,9 @@ define([
 	}])
 	.controller("gameCtrl", ["$firebaseArray", function($firebaseArray) {
 
-		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
+		// var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
 
-		var gameArray = $firebaseArray(ref);
+		// var gameArray = $firebaseArray(ref);
 
 		var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameTarget", { preload: preload, create: create, update: update });
 
@@ -108,10 +108,16 @@ define([
 
 
 			for (var i = 0; i < 20; i++) {
-				var theAmino = game.rnd.pick(aminoArray);
+				var theAmino = game.rnd.pick(sidebarArray);
 
 				//  Create a frenemy inside of the "frenemies" group
-				var frenemy = frenemies.create(i * 70, 0, theAmino);
+				var frenemyX = 201;
+				var frenemyY = 301;
+				while((frenemyX > 200 && frenemyX < 1000) && (frenemyY > 300 && frenemyY < 900)) {
+					frenemyX = game.rnd.integerInRange(0, 1200);
+					frenemyY = game.rnd.integerInRange(0, 1200);
+				}
+				var frenemy = frenemies.create(frenemyX, frenemyY, theAmino);
 				frenemy.anchor.setTo(0.5, 0.5); //so it flips around its middle
 				frenemy.rotation = game.rnd.realInRange(-0.2, 0.2);
 
