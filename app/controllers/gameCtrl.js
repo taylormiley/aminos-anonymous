@@ -58,7 +58,7 @@ define([
 		var score = 0;
 		var sidebar;
 		var sidebarIcons;
-		var sidebarArray = ["proline", "lysine", "proline", "lysine", "proline", "lysine"];
+		var sidebarArray = ["proline", "lysine", "glycine", "leucine", "valine", "glutamine"];
 		var aminoArray = [
 			"alanine",
 			"arginine",
