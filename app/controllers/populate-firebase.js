@@ -41,7 +41,6 @@ define([
           for (var key in gameProtein) {
             var theOnlyProtein = gameProtein[key];
           }
-          console.log(theOnlyProtein.sequence);
 
         });
       };
