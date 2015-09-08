@@ -162,8 +162,8 @@ define([
 			}
 
       function checkFrenemy (player, frenemy) {
-		    // Removes the star from the screen
-		    if (sidebarArray[sidebarArray.length-1] === frenemy.key) {
+		    if (sidebarArray[sidebarArray.length-1] === frenemy.key) { // right-to-left sidebar
+		    // if (sidebarArray[0] === frenemy.key) { // left-to-right sidebar
           goodFrenemy(player, frenemy);
 		    } else {
 		    	badFrenemy(player, frenemy);
@@ -171,10 +171,12 @@ define([
       }
 
       function goodFrenemy (player, frenemy) {
-        sidebarArray.splice(sidebarArray.length-1, 1);
+        sidebarArray.splice(sidebarArray.length-1, 1); // right-to-left sidebar
+        // sidebarArray.splice(0, 1); // left-to-right sidebar
         console.log(sidebarArray);
         frenemy.kill();
-	      sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true);
+	      sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true); // right-to-left sidebar
+	      // sidebarIcons.remove(sidebarIcons.children[0], true, true); // left-to-right sidebar
       }
 
       function badFrenemy (player, frenemy) {
