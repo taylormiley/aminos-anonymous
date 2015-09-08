@@ -24,12 +24,16 @@ define([
 
         function preload() {
 
+        	game.load.audio('Rosa', ['assets/Graham_Bole_-_09_-_Theme_For_Rosa.mp3']);
           game.load.image('sky', 'images/sky.png');
           //game.load.image('ground', 'images/platform.png');
           game.load.image('star', 'images/Proline.png');
 			    // game.load.spritesheet('dude', 'images/dude.png', 32, 48);
 			    game.load.image('dude', 'images/Ribosome.png');
 			    game.load.image('diamond', 'images/Lysine.png');
+
+    			
+    			game.load.audio('hit', ['assets/hitReaction.wav']);
 
         }
 
@@ -43,8 +47,17 @@ define([
 					var scoreText;
 					var sidebar;
 					var sidebarArray = ["star", "diamond", "star"];
-
+					var music;
+					
 				function create() {
+
+						 
+
+					    music = game.add.audio('Rosa');
+
+    					music.play();
+
+
 
 			    game.add.tileSprite(0, 0, 1920, 1920, 'sky');
 
@@ -55,28 +68,6 @@ define([
 
 			    //  A simple background for our game
 			    game.add.sprite(game.world.centerX, game.world.centerY, 'sky');
-
-			    //  The platforms group contains the ground and the 2 ledges we can jump on
-			    //platforms = game.add.group();
-
-			    //  We will enable physics for any object that is created in this group
-			    //platforms.enableBody = true;
-
-			    // Here we create the ground.
-			    //var ground = platforms.create(0, game.world.centerY - 64, 'ground');
-
-			    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-			    //ground.scale.setTo(2, 2);
-
-			    //  This stops it from falling away when you jump on it
-			    //ground.body.immovable = true;
-
-			    //  Now let's create two ledges
-			    //var ledge = platforms.create(400, 400, 'ground');
-			    //ledge.body.immovable = true;
-
-			    // ledge = platforms.create(-150, 250, 'ground');
-			    // ledge.body.immovable = true;
 
 			    // The player and its settings
 			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
@@ -136,6 +127,7 @@ define([
 			      //diamond.body.gravity.y = 300;
 			      diamond.body.bounce.y = 0.7 + Math.random() * 0.5;
 			      diamond.body.bounce.x = 0.7 + Math.random() * 0.5;
+
 			    }
 
 			    //  The score
@@ -158,8 +150,12 @@ define([
     //     ship.angle = 90;
     //     ship.alpha = 0.4;
     // }
+
+    			 this.hitSnd = this.game.add.audio('hit');
 			    
 			  }
+
+
 
 				function update() {
 			    //  Collide the player and the stars with the platforms
@@ -218,6 +214,9 @@ define([
 				function collectDiamond (player, diamond) {
 				  diamond.kill();
 				  player.kill();
+    			this.hitSnd.play();
+    			
+
 				}
 
         function render() {
