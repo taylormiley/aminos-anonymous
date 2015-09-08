@@ -4,248 +4,204 @@ define([
 	"firebase",
 	"bootstrap"
 ], function(angular, angularRoute, firebase, bootstrap) {
-		angular.module("AminoApp.game", ['ngRoute'])
-		.config(['$routeProvider', function($routeProvider) {
-			$routeProvider
-			.when('/', {
-				templateUrl: '../templates/game.html',
-				controller: 'gameCtrl',
-				controllerAs: 'game'
-			});
-		}])
-		.controller("gameCtrl", ["$firebaseArray",
-			function($firebaseArray) {
+	angular.module("AminoApp.game", ["ngRoute"])
+	.config(["$routeProvider", function($routeProvider) {
+		$routeProvider.when("/game", {
+			templateUrl: "../partials/game.html",
+			controller: "gameCtrl",
+			controllerAs: "game"
+		});
+	}])
+	.controller("gameCtrl", ["$firebaseArray", function($firebaseArray) {
 
-				var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
+		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
 
-				var gameArray = $firebaseArray(ref);
+		var gameArray = $firebaseArray(ref);
 
-				var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+		var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameTarget", { preload: preload, create: create, update: update });
 
-        function preload() {
+		function preload() {
 
-          game.load.image('sky', 'images/sky.png');
-          //game.load.image('ground', 'images/platform.png');
-          game.load.image('star', 'images/Alanine.png');
-			    // game.load.spritesheet('dude', 'images/dude.png', 32, 48);
-			    game.load.image('dude', 'images/Ribosome.png');
-			    game.load.image('diamond', 'images/Lysine.png');
-			    game.load.image('diamond', 'images/Arginine.png');
-			    game.load.image('diamond', 'images/Asparagine.png');
-			    game.load.image('diamond', 'images/Aspartic-acid.png');
-			    game.load.image('diamond', 'images/Gluatmic_acid.png');
-			    game.load.image('diamond', 'images/Glutamine.png');
-			    game.load.image('diamond', 'images/Isoleucine.png');
-			    game.load.image('diamond', 'images/Leucine.png');
-			    game.load.image('diamond', 'images/Lysine.png');
-			    game.load.image('diamond', 'images/Methionine.png');
-			    game.load.image('diamond', 'images/Phenylalanine.png');
-			    game.load.image('diamond', 'images/Proline.png');
+			game.load.image("background", "images/Cell_bg.png");
+			game.load.image("player", "images/Ribosome.png");
+			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
+			game.load.spritesheet("arginine", "images/Arginine.png", 60, 52);
+			game.load.spritesheet("asparagine", "images/Asparagine.png", 26, 60);
+			game.load.spritesheet("aspartic_acid", "images/Aspartic_acid.png", 60, 58);
+			game.load.spritesheet("cysteine", "images/Cysteine.png", 60, 59);
+			game.load.spritesheet("glutamic_acid", "images/Glutamic_acid.png", 30, 60);
+			game.load.spritesheet("glutamine", "images/Glutamine.png", 60, 44);
+			game.load.spritesheet("glycine", "images/Glycine.png", 60, 57);
+			game.load.spritesheet("histidine", "images/Histidine.png", 59, 60);
+			game.load.spritesheet("isoleucine", "images/Isoleucine.png", 60, 59);
+			game.load.spritesheet("leucine", "images/Leucine.png", 59, 60);
+			game.load.spritesheet("lysine", "images/Lysine.png", 60, 44);
+			game.load.spritesheet("methionine", "images/Methionine.png", 43, 60);
+			game.load.spritesheet("phenylalanine", "images/Phenylalanine.png", 60, 60);
+			game.load.spritesheet("proline", "images/Proline.png", 60, 48);
+			game.load.spritesheet("serine", "images/Serine.png", 39, 60);
+			game.load.spritesheet("threonine", "images/Threonine.png", 56, 60);
+			game.load.spritesheet("tryptophan", "images/Tryptophan.png", 60, 31);
+			game.load.spritesheet("tyrosine", "images/Tyrosine.png", 60, 38);
+			game.load.spritesheet("valine", "images/Valine.png", 60, 60);
 
-        }
+		}
 
-					var player;
-					var platforms;
-					var cursors;
-					var lives;
-					var frenemies;
-					var score = 0;
-					var scoreText;
-					var sidebar;
-					var sidebarArray = new Array("star", "diamond", "star");
-					var sidebarIcons;
+		var player;
+		var cursors;
+		var frenemies;
+		var baddies;
+		var score = 0;
+		var sidebar;
+		var sidebarIcons;
+		var sidebarArray = ["proline", "lysine", "proline"];
+		var aminoArray = [
+			"alanine",
+			"arginine",
+			"aspartic_acid",
+			"cysteine",
+			"glutamic_acid",
+			"glutamine",
+			"glycine",
+			"histidine",
+			"isoleucine",
+			"leucine",
+			"lysine",
+			"methionine",
+			"phenylalanine",
+			"proline",
+			"serine",
+			"threonine",
+			"tryptophan",
+			"tyrosine",
+			"valine"
+		];
 
-				function create() {
+		function create() {
 
-			    game.add.tileSprite(0, 0, 1920, 1920, 'sky');
+			game.add.tileSprite(0, 0, 1200, 1200, "background");
 
-			    game.world.setBounds(0, 0, 1200, 1200);
+			game.world.setBounds(0, 0, 1200, 1200);
 
-			    //  We're going to be using physics, so enable the Arcade Physics system
-			    game.physics.startSystem(Phaser.Physics.ARCADE);
-
-			    //  A simple background for our game
-			    game.add.sprite(game.world.centerX, game.world.centerY, 'sky');
-
-			    //  The platforms group contains the ground and the 2 ledges we can jump on
-			    //platforms = game.add.group();
-
-			    //  We will enable physics for any object that is created in this group
-			    //platforms.enableBody = true;
-
-			    // Here we create the ground.
-			    //var ground = platforms.create(0, game.world.centerY - 64, 'ground');
-
-			    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-			    //ground.scale.setTo(2, 2);
-
-			    //  This stops it from falling away when you jump on it
-			    //ground.body.immovable = true;
-
-			    //  Now let's create two ledges
-			    //var ledge = platforms.create(400, 400, 'ground');
-			    //ledge.body.immovable = true;
-
-			    // ledge = platforms.create(-150, 250, 'ground');
-			    // ledge.body.immovable = true;
-
-			    // The player and its settings
-			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
-			    player.anchor.setTo(0.5, 1); //so it flips around its middle
-
-			    //  We need to enable physics on the player
-			    game.physics.arcade.enable(player);
-
-			    //  Player physics properties. Give the little guy a slight bounce. 
-			    player.body.collideWorldBounds = true;
-			    //  Our two animations, walking left and right.
-			    // player.animations.add('left', [0, 1, 2, 3], 10, true);
-			    // player.animations.add('right', [5, 6, 7, 8], 10, true);
-
-			    //  Finally some frenemies to collect
-			    frenemies = game.add.group();
-
-			    diamonds = game.add.group();
-
-			    sidebarIcons = game.add.group();
+			//  We"re going to be using physics, so enable the Arcade Physics system
+			game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
+			// The player and its settings
+			player = game.add.sprite(game.world.centerX, game.world.centerY, "player");
+			player.anchor.setTo(0.5, 1); //so it flips around its middle
+
+			//  We need to enable physics on the player
+			game.physics.arcade.enable(player);
+
+			//  Player physics properties. Give the little guy a slight bounce. 
+			player.body.collideWorldBounds = true;
+
+			//  Finally some frenemies to collect
+			frenemies = game.add.group();
+
+			sidebarIcons = game.add.group();
 
 
-			    //  We will enable physics for any star that is created in this group
-			    frenemies.enableBody = true;
+			//  We will enable physics for any frenemy that is created in this group
+			frenemies.enableBody = true;
 
-			    diamonds.enableBody = true;
 
-			    //  Here we'll create 12 of them evenly spaced apart
-			    for (var i = 0; i < 10; i++) {
+			for (var i = 0; i < 20; i++) {
+				var theAmino = game.rnd.pick(aminoArray);
 
-		        //  Create a star inside of the 'frenemies' group
-		        var star = frenemies.create(i * 70, 0, 'star');
-		        star.friendly = true;
+				//  Create a frenemy inside of the "frenemies" group
+				var frenemy = frenemies.create(i * 70, 0, theAmino);
+				frenemy.anchor.setTo(0.5, 0.5); //so it flips around its middle
+				frenemy.rotation = game.rnd.realInRange(-0.2, 0.2);
 
-		        star.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-200, 200), 'spinner');
+				frenemy.body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
 
-		        star.body.collideWorldBounds = true;
+				frenemy.body.collideWorldBounds = true;
 
-		        //star.body.velocity.x = 0.7 + Math.random() * 100;
-		        //star.body.velocity.y = 0.7 + Math.random() * 100;
+				frenemy.body.bounce.y = 0.6 + Math.random() * 0.35;
+				frenemy.body.bounce.x = 0.6 + Math.random() * 0.35;
 
-		        //  Let gravity do its thing
-		        //star.body.gravity.y = 300;
+			}
 
-		        //  This just gives each star a slightly random bounce value
-		        star.body.bounce.y = 0.7 + Math.random() * 0.5;
-		        star.body.bounce.x = 0.7 + Math.random() * 0.5;
-		        console.log(star);
+			//  Our controls.
+			cursors = game.input.keyboard.createCursorKeys();
 
-			    }
+			game.camera.follow(player);
 
-			    for (var j = 0; j < 10; j++) {
-			      var diamond = frenemies.create(j * 80, 0, 'diamond');
+			for (var k = 0; k < 3; k++) {
+				var sidebar = sidebarIcons.create(10 + (30 * k), 10, sidebarArray[k]);
+				sidebar.fixedToCamera = true;
+			}
 
-			      diamond.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-200, 200), 'spinner');
+		}
 
-			      diamond.body.collideWorldBounds = true;
+		function update() {
+			game.physics.arcade.collide(frenemies, frenemies, rotateBoth, null, this);
 
-			      //diamond.body.velocity.x = 0.7 + Math.random() * 0.5;
-			      //diamond.body.velocity.y = 0.7 + Math.random() * 0.5;
-			      //diamond.body.gravity.y = 300;
-			      diamond.body.bounce.y = 0.7 + Math.random() * 0.5;
-			      diamond.body.bounce.x = 0.7 + Math.random() * 0.5;
-			    }
+			//  Checks to see if the player overlaps with any of the frenemies, if he does call the collectGoodie function
+			game.physics.arcade.overlap(player, frenemies, checkFrenemy, null, this);
 
-			    //  The score
-			    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+			//  Reset the players velocity (movement)
+			player.body.velocity.x = 0;
+			player.body.velocity.y = 0;
 
-			    //  Our controls.
-			    cursors = game.input.keyboard.createCursorKeys();
 
-			    game.camera.follow(player);
+			if (cursors.left.isDown) {
+				player.body.velocity.x = -300;
+				player.scale.x = -1;
+			} else if (cursors.right.isDown) {
+				player.body.velocity.x = 300;
+				player.scale.x = 1;
+			}
 
-          for (var k = 0; k < 3; k++) {
-				    var sidebarIcon = sidebarIcons.create(10 + (70 * k), 10, sidebarArray[k]);
-				    sidebarIcons.fixedToCamera = true;
-				  }
-				  console.log(sidebarIcons);
+			if (cursors.up.isDown) {
+				player.body.velocity.y = -300;
+			} else if (cursors.down.isDown) {
+				player.body.velocity.y = 300;
+			}
 
-			 //    for (var i = 0; i < 3; i++) 
-    // {
-    //     var ship = lives.create(game.world.width - 100 + (30 * i), 60, 'ship');
-    //     ship.anchor.setTo(0.5, 0.5);
-    //     ship.angle = 90;
-    //     ship.alpha = 0.4;
-    // }
-			    
-			  }
+      function checkFrenemy (player, frenemy) {
+		    // Removes the star from the screen
+		    if (sidebarArray[0] === frenemy.key) {
+          goodFrenemy(player, frenemy);
+		    } else {
+		    	badFrenemy(player, frenemy);
+		    }
+      }
 
-				function update() {
-			    //  Collide the player and the frenemies with the platforms
-			    //game.physics.arcade.collide(player, platforms);
-			    //game.physics.arcade.collide(frenemies, platforms);
-			    //game.physics.arcade.collide(diamonds, platforms);
-			    game.physics.arcade.collide(frenemies, frenemies);
+      function goodFrenemy (player, frenemy) {
+        sidebarArray.splice(0, 1);
+        console.log(sidebarArray);
+        frenemy.kill();
+	      sidebarIcons.remove(sidebarIcons.children[0], true, true);
+      }
 
-			    //  Checks to see if the player overlaps with any of the frenemies, if he does call the collectStar function
-			    game.physics.arcade.overlap(player, frenemies, checkFrenemy, null, this);
-			    //  Reset the players velocity (movement)
-			    player.body.velocity.x = 0;
-			    player.body.velocity.y = 0;
+      function badFrenemy (player, frenemy) {
+        player.kill();
+      }
 
-			    
-			    if (cursors.left.isDown) {
-			      player.body.velocity.x = -300;
-			      player.scale.x = 1;
-			      // player.animations.play('left');
-			    } 
-			    else if (cursors.right.isDown) {
-			      player.body.velocity.x = 300;
-			      player.scale.x = -1;
-			      // player.animations.play('right');
-			    }
-			    else {
-			      //  Stand still
-			      // player.animations.stop();
+			function rotateBoth(item1, item2) {
+				item1.rotation = game.rnd.realInRange(-0.2, 0.2);
+				item2.rotation = game.rnd.realInRange(-0.2, 0.2);
+			}
 
-			      // player.frame = 4;
-			    } 
-
-			    if (cursors.up.isDown) {
-			      player.body.velocity.y = -300;
-			    }
-			    else if (cursors.down.isDown)
-			    {
-			      player.body.velocity.y = 300;
-			    }
-				    
+			for (var l = 0; l < frenemies.children.length; l++) {
+				if(Math.abs(frenemies.children[l].body.velocity.x) < 40 || Math.abs(frenemies.children[l].body.velocity.y) < 40) {
+					frenemies.children[l].body.velocity.set(game.rnd.integerInRange(-400, 400), game.rnd.integerInRange(-400, 400), "spinner");
 				}
+				if(frenemies.children[l].body.velocity.x > 0) {
+					frenemies.children[l].frame = 1;
+				} else if(frenemies.children[l].body.velocity.x < 0) { 
+					frenemies.children[l].frame = 0;
+				}
+			}
+			
+			function render() {
+				game.debug.cameraInfo(game.camera, 32, 32);
+				game.debug.spriteCoords(player, 32, 500);
+			}
 
-        function checkFrenemy (player, frenemy) {
-			    // Removes the star from the screen
-			    if (sidebarArray[0] === frenemy.key) {
-            goodFrenemy(player, frenemy);
-			    } else {
-			    	badFrenemy(player, frenemy);
-			    }
-        }
-
-        function goodFrenemy (player, frenemy) {
-          sidebarArray.splice(0, 1);
-          console.log(sidebarArray);
-          frenemy.kill();
-		      sidebarIcons.remove(sidebarIcons.children[0], true, true);
-        }
-
-        function badFrenemy (player, frenemy) {
-          player.kill();
-        }
-
-
-        function render() {
-			    game.debug.cameraInfo(game.camera, 32, 32);
-			    game.debug.spriteCoords(player, 32, 500);
-
-        }
-
-			}]);
+		}
+	}]);
 });
