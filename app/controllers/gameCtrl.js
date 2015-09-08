@@ -41,7 +41,7 @@ define([
 					var score = 0;
 					var scoreText;
 					var sidebar;
-					var sidebarArray = new Array("star", "diamond", "star")
+					var sidebarArray = new Array("star", "diamond", "star");
 					var sidebarIcons;
 
 				function create() {
@@ -80,7 +80,7 @@ define([
 
 			    // The player and its settings
 			    player = game.add.sprite(game.world.centerX, game.world.centerY, 'dude');
-			    player.anchor.setTo(.5, 1); //so it flips around its middle
+			    player.anchor.setTo(0.5, 1); //so it flips around its middle
 
 			    //  We need to enable physics on the player
 			    game.physics.arcade.enable(player);
@@ -130,8 +130,8 @@ define([
 
 			    }
 
-			    for (var i = 0; i < 10; i++) {
-			      var diamond = frenemies.create(i * 80, 0, 'diamond');
+			    for (var j = 0; j < 10; j++) {
+			      var diamond = frenemies.create(j * 80, 0, 'diamond');
 
 			      diamond.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-200, 200), 'spinner');
 
@@ -152,8 +152,8 @@ define([
 
 			    game.camera.follow(player);
 
-          for (var i = 0; i < 3; i++) {
-				    var sidebarIcon = sidebarIcons.create(10 + (70 * i), 10, sidebarArray[i]);
+          for (var k = 0; k < 3; k++) {
+				    var sidebarIcon = sidebarIcons.create(10 + (70 * k), 10, sidebarArray[k]);
 				    sidebarIcons.fixedToCamera = true;
 				  }
 				  console.log(sidebarIcons);
