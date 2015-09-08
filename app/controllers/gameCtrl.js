@@ -26,10 +26,21 @@ define([
 
           game.load.image('sky', 'images/sky.png');
           //game.load.image('ground', 'images/platform.png');
-          game.load.image('star', 'images/Proline.png');
+          game.load.image('star', 'images/Alanine.png');
 			    // game.load.spritesheet('dude', 'images/dude.png', 32, 48);
 			    game.load.image('dude', 'images/Ribosome.png');
 			    game.load.image('diamond', 'images/Lysine.png');
+			    game.load.image('diamond', 'images/Arginine.png');
+			    game.load.image('diamond', 'images/Asparagine.png');
+			    game.load.image('diamond', 'images/Aspartic-acid.png');
+			    game.load.image('diamond', 'images/Gluatmic_acid.png');
+			    game.load.image('diamond', 'images/Glutamine.png');
+			    game.load.image('diamond', 'images/Isoleucine.png');
+			    game.load.image('diamond', 'images/Leucine.png');
+			    game.load.image('diamond', 'images/Lysine.png');
+			    game.load.image('diamond', 'images/Methionine.png');
+			    game.load.image('diamond', 'images/Phenylalanine.png');
+			    game.load.image('diamond', 'images/Proline.png');
 
         }
 
