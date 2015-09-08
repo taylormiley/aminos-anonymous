@@ -44,9 +44,7 @@ define([
           } else {
             console.log("Authenticated successfully with payload:", authData);
             currentUID = authData.uid;
-            console.log("currentUID", currentUID);
             uid.setUid(currentUID);
-            console.log("uid.getUid", uid.getUid());
             for (var i = 0; i < usersArr.length; i++) {
               if(usersArr[i].uid === currentUID) {
                 goTo = "welcome";

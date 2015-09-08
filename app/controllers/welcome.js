@@ -18,13 +18,14 @@ define([
       var usersArr = $firebaseArray(userRef);
       var currentUID = uid.getUid();
 
-      console.log(usersArr);
-      for(var i = 0; i < usersArr.length; i++) {
-        console.log("Ding");
-        if(usersArr[i].uid === currentUID) {
-          this.username = usersArr[i].username;
-        } 
-      }
+      usersArr.$loaded().then(angular.bind(this, function(data){
+        for(var i = 0; i < data.length; i++) {
+          console.log("Ding");
+          if(data[i].uid === currentUID) {
+            this.username = data[i].username;
+          } 
+        }
+      }));
 
       this.play = function() {
         window.location = "#/game/";
