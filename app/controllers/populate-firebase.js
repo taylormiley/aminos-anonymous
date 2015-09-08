@@ -15,8 +15,8 @@ define([
     });
   }])
 
-  .controller("addProteinCtrl", ['$firebaseArray',
-    function($firebaseArray) {
+  .controller("addProteinCtrl", ['$firebaseArray', '$firebaseObject', '$routeParams',
+    function($firebaseArray, $firebaseObject, $routeParams) {
       this.aminoAcid = {};
       this.sequence = "";
       var ref = new Firebase("https://aminos-anonymous.firebaseio.com/protein");
@@ -24,10 +24,25 @@ define([
       this.addProtein = function() {
         arrayOfSequence = this.sequence.split("-");
         console.log("array", arrayOfSequence);
-        monkey = "";
-        console.log("name", this.monkey);
+        this.newProtein = "";
+        console.log("name", this.newProtein);
         this.protein.$add({
-          monkey: arrayOfSequence,
+          protein: this.newProtein,
+          sequence: arrayOfSequence,
+
+        });
+      };
+      this.gameProtein = function() {
+        this.sequence = [];
+        console.log("click");
+
+        ref.once("value", function(snapshot) {
+          var gameProtein = snapshot.val();
+          for (var key in gameProtein) {
+            var theOnlyProtein = gameProtein[key];
+          }
+          console.log(theOnlyProtein.sequence);
+
         });
       };
     }
