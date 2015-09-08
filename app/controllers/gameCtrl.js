@@ -155,11 +155,11 @@ define([
             sidebarIcons.children[k].alpha = 0;
 				}
 				if (k === 1) {
-					sidebarIcons.children[k].scale.x = .7;
-					sidebarIcons.children[k].scale.y = .7;
+					sidebarIcons.children[k].scale.x = 0.7;
+					sidebarIcons.children[k].scale.y = 0.7;
 				}
 				console.log(sidebarIcons.children[k]);
-				console.log(sidebarIcons.children[k].alpha)
+				console.log(sidebarIcons.children[k].alpha);
 			}
 			console.log(sidebarIcons);
 
@@ -214,8 +214,8 @@ define([
             sidebarIcons.children[m].alpha = 0;
 				  }
 				  if (m === 1) {
-					sidebarIcons.children[m].scale.x = .7;
-					sidebarIcons.children[m].scale.y = .7;
+					sidebarIcons.children[m].scale.x = 0.7;
+					sidebarIcons.children[m].scale.y = 0.7;
 				}
 				  console.log(sidebarIcons);
 			  }
