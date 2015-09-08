@@ -129,7 +129,7 @@ define([
 
 			game.camera.follow(player);
 
-			for (var k = 0; k < 3; k++) {
+			for (var k = 0; k < sidebarArray.length; k++) {
 				var sidebar = sidebarIcons.create(10 + (65 * k), 10, sidebarArray[k]);
 				sidebar.fixedToCamera = true;
 			}
