@@ -41,8 +41,7 @@ define([
           uid: currentUID,
           username: this.username
         });
-        this.usernameHidden = true;
-        this.welcomeHidden = false;
+        window.location = "#/welcome/";
       };
 
     }
