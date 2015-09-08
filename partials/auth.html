@@ -1,5 +1,5 @@
 <div class="container-fluid authform">
-  <div class="row" ng-hide="auth.loginHidden">
+  <div class="row">
     <div class="col-sm-1 col-md-2 col-lg-3"></div>
     <div class="col-sm-10 col-md-8 col-lg-6">
       <form>
@@ -24,29 +24,6 @@
         <button class="btn" id="google-btn" ng-click="auth.serviceAuth(google)"><img src="images/google_icon.png" alt="Google logo">&nbsp;Google</button>
         <button class="btn" id="twitter-btn" ng-click="auth.serviceAuth(twitter)"><img src="images/twitter_icon.png" alt="Twitter logo">&nbsp;Twitter</button>
       </div>
-    </div>
-    <div class="col-sm-1 col-md-2 col-lg-3"></div>
-  </div>
-  <div class="row" ng-hide="auth.usernameHidden">
-    <div class="col-sm-1 col-md-2 col-lg-3"></div>
-    <div class="col-sm-10 col-md-8 col-lg-6">
-      <h3>Please choose a username</h3>
-      <div class="input-group">
-        <span class="input-group-addon">Username:</span>
-        <input type="text" class="form-control add-input" id="username-input" placeholder="Fishbulb" ng-model="auth.username">
-      </div>
-      <div class="loginbuttons">
-        <button class="btn btn-default" id="available-btn" ng-click="auth.checkAvail()">Check Availability</button> 
-        <button class="btn btn-default" id="choose-btn" ng-click="auth.checkAvail(true)">Choose Username</button>
-      </div>
-    </div>
-    <div class="col-sm-1 col-md-2 col-lg-3"></div>
-  </div>
-  <div class="row" ng-hide="auth.welcomeHidden">
-    <div class="col-sm-1 col-md-2 col-lg-3"></div>
-    <div class="col-sm-10 col-md-8 col-lg-6">
-      <h2>Welcome {{auth.username}}!</h2>
-      <button class="btn btn-success" ng-click="auth.play()">Play!</button>
     </div>
     <div class="col-sm-1 col-md-2 col-lg-3"></div>
   </div>

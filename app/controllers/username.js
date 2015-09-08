@@ -4,21 +4,23 @@ define([
   "angularRoute"
 ], function(angular, firebase, route) {
   angular
-  .module("AminoApp.auth", ["ngRoute"])
+  .module("AminoApp.username", ["ngRoute"])
   .config(["$routeProvider", function($routeProvider) {
-    $routeProvider.when("/", {
-      templateUrl: "partials/auth.html",
-      controller: "authCtrl",
-      controllerAs: "auth"
+    $routeProvider.when("/username", {
+      templateUrl: "partials/username.html",
+      controller: "usernameCtrl",
+      controllerAs: "username"
     });
   }])
-  .controller("authCtrl", ["$firebaseAuth", "$firebaseArray", "uid",
+  .controller("usernameCtrl", ["$firebaseAuth", "$firebaseArray", "uid",
     function($firebaseAuth, $firebaseArray, uid) {
+      this.loginHidden = false;
+      this.usernameHidden = true;
+      this.welcomeHidden = true;
       var authRef = new Firebase("https://aminos-anonymous.firebaseio.com/");
       var userRef = new Firebase("https://aminos-anonymous.firebaseio.com/users/");
       var usersArr = $firebaseArray(userRef);
       var currentUID = "";
-      var goTo = "";
 
       this.signUp = function() {
         authRef.createUser({
@@ -31,8 +33,9 @@ define([
             console.log("Successfully created user account with uid:", userData.uid);
             this.login();
           }
-        }.bind(this));
+        });
       };
+
 
       this.logIn = function() {
         authRef.authWithPassword({
@@ -44,19 +47,17 @@ define([
           } else {
             console.log("Authenticated successfully with payload:", authData);
             currentUID = authData.uid;
-            console.log("currentUID", currentUID);
-            uid.setUid(currentUID);
-            console.log("uid.getUid", uid.getUid());
+            $(".row").click();
             for (var i = 0; i < usersArr.length; i++) {
               if(usersArr[i].uid === currentUID) {
-                goTo = "welcome";
+                this.username = usersArr[i].username;
+                this.loginHidden = true;
+                this.welcomeHidden = false;
                 break;
               } else {
-                goTo = "username";
+                this.loginHidden = true;
+                this.usernameHidden = false;
               }
-            }
-            if(goTo !== "") {
-              window.location = "#/" + goTo + "/";
             }
           }
         }.bind(this), {
@@ -71,22 +72,52 @@ define([
           } else {
             console.log("Authenticated successfully with payload:", authData);
             currentUID = authData.uid;
-            uid.setUid(currentUID);
-            for (var i = 0; i < usersArr.length; i++) {
-              if(usersArr[i].uid === currentUID) {
-                goTo = "welcome";
+            for (var j = 0; j < usersArr.length; j++) {
+              if(usersArr[j].uid === currentUID) {
+                this.username = usersArr[j].username;
+                this.loginHidden = true;
+                this.welcomeHidden = false;
                 break;
               } else {
-                goTo = "username";
+                this.loginHidden = true;
+                this.usernameHidden = false;
               }
             }
-            if(goTo !== "") {
-              window.location = "#/" + goTo + "/";
-            }
           }
-        }.bind(this), {
+        }, {
           remember: "sessionOnly"
         });
+      };
+
+      this.checkAvail = function(choosing) {
+        var usernameAvailable = false;
+        for (var k = 0; k < usersArr.length; k++) {
+          if(usersArr[k].username === this.username) {
+            usernameAvailable = false;
+            alert("I'm sorry, the username " + this.username + " is taken.");
+            break;
+          } else {
+            usernameAvailable = true;
+          }
+        }
+        if(usernameAvailable && choosing) {
+          this.newUsername();
+        } else if (usernameAvailable) {
+          alert(this.username + " is available!");
+        }
+      };
+
+      this.newUsername = function() {
+        usersArr.$add({
+          uid: currentUID,
+          username: this.username
+        });
+        this.usernameHidden = true;
+        this.welcomeHidden = false;
+      };
+
+      this.play = function() {
+        window.location = "#/game/";
       };
 
     }
