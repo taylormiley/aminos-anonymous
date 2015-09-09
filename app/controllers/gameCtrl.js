@@ -14,9 +14,21 @@ define([
 	}])
 	.controller("gameCtrl", ["$firebaseArray", "uid", function($firebaseArray, uid) {
 
-		var ref = new Firebase("https://aminos-anonymous.firebaseio.com/game");
+		var proteinRef = new Firebase("https://aminos-anonymous.firebaseio.com/protein");
+		var userRef = new Firebase("https://aminos-anonymous.firebaseio.com/users");
 
-		var gameArray = $firebaseArray(ref);
+		var proteinArr = $firebaseArray(proteinRef);
+		var userArr = $firebaseArray(userRef);
+
+		var currentUID = uid.getUid();
+
+		userArr.$loaded().then(angular.bind(this, function(data) {
+			for(var key in data) {
+				if(data[key].uid === currentUID) {
+					this.username = data[key].username;
+				}
+			}
+		}));
 
 		var game = new Phaser.Game(800, 600, Phaser.AUTO, "gameTarget", { preload: preload, create: create, update: update });
 
@@ -24,8 +36,11 @@ define([
 
 			game.load.audio('titletrk', ['audio/titleTrack.wav']);
 			game.load.audio('hitReact', ['audio/hitReaction.wav']);
+			game.load.audio('ping', ['audio/ping.wav']);
+			game.load.audio('success', ['audio/success.wav']);
 			game.load.image("background", "images/Cell_bg.png");
-			game.load.image("player", "images/Ribosome.png");
+			game.load.image("selection_box", "images/selection_box.png");
+			game.load.spritesheet("player", "images/Ribosome.png", 65, 70);
 			game.load.spritesheet("alanine", "images/Alanine.png", 60, 59);
 			game.load.spritesheet("arginine", "images/Arginine.png", 60, 52);
 			game.load.spritesheet("asparagine", "images/Asparagine.png", 26, 60);
@@ -50,12 +65,13 @@ define([
 		}
 
 		var player;
+		var selection_box;
 		var cursors;
 		var music;
 		var hitReact;
+		var ping;
+		var success;
 		var frenemies;
-		var baddies;
-		var score = 0;
 		var sidebar;
 		var sidebarIcons;
 		var sidebarArray = ["proline", "lysine", "glycine", "leucine", "valine", "glutamine"];
@@ -88,8 +104,11 @@ define([
 	    music.play();
 	    
 			hitReact = game.add.audio('hitReact');
+			ping = game.add.audio('ping');
+			success = game.add.audio('success');
 
 			game.add.tileSprite(0, 0, 1200, 1200, "background");
+
 
 			game.world.setBounds(0, 0, 1200, 1200);
 
@@ -99,7 +118,7 @@ define([
 
 			// The player and its settings
 			player = game.add.sprite(game.world.centerX, game.world.centerY, "player");
-			player.anchor.setTo(0.5, 1); //so it flips around its middle
+			player.anchor.setTo(0.5, 0.5); //so it flips around its middle
 
 			//  We need to enable physics on the player
 			game.physics.arcade.enable(player);
@@ -111,6 +130,9 @@ define([
 
 			//  Finally some frenemies to collect
 			frenemies = game.add.group();
+
+			selection_box = game.add.sprite(0, 0, "selection_box");
+			selection_box.fixedToCamera = true;
 
 			sidebarIcons = game.add.group();
 
@@ -148,9 +170,8 @@ define([
 			game.camera.follow(player);
 
 			for (var k = 0; k < sidebarArray.length; k++) {
-				var sidebar = sidebarIcons.create(10 + (65 * k), 10, sidebarArray[k]);
+				var sidebar = sidebarIcons.create(10 + (70 * k), 10, sidebarArray[k]);
 				sidebar.fixedToCamera = true;
-				console.log(sidebarIcons);
 				if (k > 1) {
             sidebarIcons.children[k].alpha = 0;
 				}
@@ -158,11 +179,8 @@ define([
 					sidebarIcons.children[k].scale.x = 0.7;
 					sidebarIcons.children[k].scale.y = 0.7;
 				}
-				console.log(sidebarIcons.children[k]);
-				console.log(sidebarIcons.children[k].alpha);
 			}
-			console.log(sidebarIcons);
-
+			console.log(frenemies);
 		}
 
 		function update() {
@@ -174,20 +192,24 @@ define([
 			//  Reset the players velocity (movement)
 			player.body.velocity.x = 0;
 			player.body.velocity.y = 0;
-
+			player.frame = 0;
 
 			if (cursors.left.isDown) {
 				player.body.velocity.x = -300;
+				player.frame = 1;
 				player.scale.x = -1;
 			} else if (cursors.right.isDown) {
 				player.body.velocity.x = 300;
+				player.frame = 1;
 				player.scale.x = 1;
 			}
 
 			if (cursors.up.isDown) {
 				player.body.velocity.y = -300;
+				player.frame = 2;
 			} else if (cursors.down.isDown) {
 				player.body.velocity.y = 300;
+				player.frame = 3;
 			}
 
       function checkFrenemy (player, frenemy) {
@@ -201,30 +223,38 @@ define([
       }
 
       function goodFrenemy (player, frenemy) {
+        if(sidebarArray.length === 1) {
+        	success.play();
+        } else {
+		    	ping.play();
+		    }
         // sidebarArray.splice(sidebarArray.length-1, 1); // right-to-left sidebar
         sidebarArray.splice(0, 1); // left-to-right sidebar
-        console.log(sidebarArray);
         frenemy.kill();
 	      // sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true); // right-to-left sidebar
 	      sidebarIcons.removeAll(); // left-to-right sidebar
 	      for (var m = 0; m < sidebarArray.length; m++) {
-				  var sidebar = sidebarIcons.create(10 + (65 * m), 10, sidebarArray[m]);
+				  var sidebar = sidebarIcons.create(10 + (70 * m), 10, sidebarArray[m]);
 				  sidebar.fixedToCamera = true;
 				  if (m > 1) {
             sidebarIcons.children[m].alpha = 0;
 				  }
 				  if (m === 1) {
-					sidebarIcons.children[m].scale.x = 0.7;
-					sidebarIcons.children[m].scale.y = 0.7;
-				}
-				  console.log(sidebarIcons);
+						sidebarIcons.children[m].scale.x = 0.7;
+						sidebarIcons.children[m].scale.y = 0.7;
+					}
 			  }
 			  
       }
 
       function badFrenemy (player, frenemy) {
-        player.kill();
-        
+      	player.rotation++;
+      	player.scale.x -= 0.1;
+      	player.scale.y -= 0.1;
+      	player.alpha -= 0.1;
+      	setTimeout(function() {
+	        player.kill();
+				}, (200));
       }
 
 			function rotateBoth(item1, item2) {
@@ -232,7 +262,11 @@ define([
 				item2.rotation = game.rnd.realInRange(-0.2, 0.2);
 			}
 
+			var aliveCount = 0;
 			for (var l = 0; l < frenemies.children.length; l++) {
+				if(frenemies.children[l].alive === true) {
+					aliveCount++;
+				}
 				if(Math.abs(frenemies.children[l].body.velocity.x) < 40 || Math.abs(frenemies.children[l].body.velocity.y) < 40) {
 					frenemies.children[l].body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-300, 300), "spinner");
 				}
@@ -241,6 +275,30 @@ define([
 				} else if(frenemies.children[l].body.velocity.x < 0) { 
 					frenemies.children[l].frame = 0;
 				}
+			}
+
+			// Always keep 20 frenemies on screen
+			if (aliveCount < 20) {
+				var theAmino = game.rnd.pick(sidebarArray);
+
+				//  Create a frenemy inside of the "frenemies" group
+				var frenemyX = 201;
+				var frenemyY = 301;
+				while((frenemyX > 200 && frenemyX < 1000) && (frenemyY > 300 && frenemyY < 900)) {
+					frenemyX = game.rnd.integerInRange(0, 1200);
+					frenemyY = game.rnd.integerInRange(0, 1200);
+				}
+				var frenemy = frenemies.create(frenemyX, frenemyY, theAmino);
+				frenemy.anchor.setTo(0.5, 0.5); //so it flips around its middle
+				frenemy.rotation = game.rnd.realInRange(-0.2, 0.2);
+
+				frenemy.body.velocity.set(game.rnd.integerInRange(-300, 300), game.rnd.integerInRange(-300, 300), "spinner");
+
+				frenemy.body.collideWorldBounds = true;
+
+				frenemy.body.bounce.y = 0.6 + Math.random() * 0.35;
+				frenemy.body.bounce.x = 0.6 + Math.random() * 0.35;
+
 			}
 			
 			function render() {

@@ -47,7 +47,7 @@ define([
             uid.setUid(currentUID);
             for (var i = 0; i < usersArr.length; i++) {
               if(usersArr[i].uid === currentUID) {
-                goTo = "welcome";
+                goTo = "game";
                 break;
               } else {
                 goTo = "username";
@@ -72,7 +72,7 @@ define([
             uid.setUid(currentUID);
             for (var i = 0; i < usersArr.length; i++) {
               if(usersArr[i].uid === currentUID) {
-                goTo = "welcome";
+                goTo = "game";
                 break;
               } else {
                 goTo = "username";
