@@ -142,7 +142,12 @@ define([
 
 
 			for (var i = 0; i < 20; i++) {
-				var theAmino = game.rnd.pick(sidebarArray);
+				var theAmino = "";
+				if(i < 5) {
+					theAmino = sidebarArray[i];
+				} else {
+					theAmino = game.rnd.pick(sidebarArray);
+				}
 
 				//  Create a frenemy inside of the "frenemies" group
 				var frenemyX = 201;
