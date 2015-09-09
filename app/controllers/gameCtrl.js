@@ -58,6 +58,7 @@ define([
 		var score = 0;
 		var sidebar;
 		var sidebarIcons;
+		var stateText;
 		var sidebarArray = ["proline", "lysine", "glycine", "leucine", "valine", "glutamine"];
 		var aminoArray = [
 			"alanine",
@@ -82,6 +83,10 @@ define([
 		];
 
 		function create() {
+
+			stateText = game.add.text(game.world.centerX,game.world.centerY,' ', { font: '84px Arial', fill: '#fff' });
+      stateText.anchor.setTo(0.5, 0.5);
+      stateText.visible = false;
 
 	    music = game.add.audio('titletrk');
 	    music.loop = true;
@@ -190,6 +195,8 @@ define([
 				player.body.velocity.y = 300;
 			}
 
+			
+
       function checkFrenemy (player, frenemy) {
 		    // if (sidebarArray[sidebarArray.length] === frenemy.key) { // right-to-left sidebar
 		    if (sidebarArray[0] === frenemy.key) { // left-to-right sidebar
@@ -224,6 +231,12 @@ define([
 
       function badFrenemy (player, frenemy) {
         player.kill();
+        stateText.text=" GAME OVER \n Click to restart";
+        stateText.visible = true;
+        frenemies.removeAll();
+
+        //the "click to restart" handler
+        game.input.onTap.addOnce(create,this);
         
       }
 
