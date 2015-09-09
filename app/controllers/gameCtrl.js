@@ -285,12 +285,12 @@ define([
 
 				// Always keep 20 frenemies on screen
 				if (aliveCount < 20) {
-					var theAmino = game.rnd.pick(sidebarArray);
+					var theAmino = sidebarArray[0];
 
 					//  Create a frenemy inside of the "frenemies" group
 					var frenemyX = 201;
 					var frenemyY = 301;
-					while((frenemyX > 200 && frenemyX < 1000) && (frenemyY > 300 && frenemyY < 900)) {
+					while((frenemyX > player.x - 100 && frenemyX < player.x + 100) && (frenemyY > player.y - 100 && frenemyY < player.y + 100)) {
 						frenemyX = game.rnd.integerInRange(0, 1200);
 						frenemyY = game.rnd.integerInRange(0, 1200);
 					}
