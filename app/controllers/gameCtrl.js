@@ -43,6 +43,8 @@ define([
 			var sidebarIcons;
 			var sidebarArray = [];
 			var selection_box;
+			var stateText;
+			var spriteText;
       var gameProtein = snapshot.val();
       for (var key in gameProtein) {
         theOnlyProtein = gameProtein[key];
@@ -158,6 +160,10 @@ define([
 						sidebarIcons.children[k].scale.y = 0.7;
 					}
 				}
+
+				spriteText = game.add.sprite(0, 0);
+        spriteText.fixedToCamera = true;
+        spriteText.visible = false;
 			}
 
 			function update() {
@@ -206,6 +212,12 @@ define([
 	      function goodFrenemy (player, frenemy) {
 	        if(sidebarArray.length === 1) {
 	        	success.play();
+	        	stateText = game.add.text(300, 400, " YOU WON! \n Click to restart");
+            spriteText.addChild(stateText);
+            spriteText.visible = true;
+
+        //the "click to restart" handler
+          game.input.onTap.addOnce(create,this);
 	        } else {
 			    	ping.play();
 			    }
@@ -235,6 +247,12 @@ define([
 	      	setTimeout(function() {
 	      		player.kill();
 	      	}, (200));
+	      	stateText = game.add.text(300, 400, " GAME OVER \n Click to restart");
+          spriteText.addChild(stateText);
+          spriteText.visible = true;
+
+        //the "click to restart" handler
+          game.input.onTap.addOnce(create, this);
 	      }
 
 				var aliveCount = 0;
