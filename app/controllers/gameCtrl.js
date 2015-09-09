@@ -32,6 +32,9 @@ define([
     
     var testGame = proteinRef.once("value", function(snapshot) {
 	    var theOnlyProtein = [];
+	    var countHolder;
+	    var countText;
+	    var aminosRemaining;
 			var player;
 			var cursors;
 			var music;
@@ -82,6 +85,8 @@ define([
 			}
 
 			function create() {
+				aminosRemaining = sidebarArray.length;
+
 		    music = game.add.audio('titletrk');
 		    music.loop = true;
 		    music.play();
@@ -146,6 +151,18 @@ define([
 				cursors = game.input.keyboard.createCursorKeys();
 
 				game.camera.follow(player);
+
+				//Created a Sprite with fixedToCamera = true
+				countHolder = game.add.sprite(0,0);
+				countHolder.fixedToCamera = true;
+
+				//addChild of my text at x:0, y:0
+				countText = game.add.text(0,0,aminosRemaining + " Left!");
+				countHolder.addChild(countText);
+
+				//position the cameraOffset of my Sprite
+				countHolder.cameraOffset.x = 140;
+				countHolder.cameraOffset.y = 10;
 
 				for (var k = 0; k < sidebarArray.length; k++) {
 					var sidebar = sidebarIcons.create(10 + (70 * k), 10, sidebarArray[k]);
@@ -212,6 +229,7 @@ define([
 	        // sidebarArray.splice(sidebarArray.length-1, 1); // right-to-left sidebar
 	        sidebarArray.splice(0, 1); // left-to-right sidebar
 	        frenemy.kill();
+	        countText.text = sidebarArray.length + " Left!";
 		      // sidebarIcons.remove(sidebarIcons.children[sidebarArray.length], true, true); // right-to-left sidebar
 		      sidebarIcons.removeAll(); // left-to-right sidebar
 		      for (var m = 0; m < sidebarArray.length; m++) {
